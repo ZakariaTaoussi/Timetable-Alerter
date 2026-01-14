@@ -5,7 +5,10 @@ import { AgendaRepository } from "../internal/repositories/agendas/AgendaReposit
 import { AgendaService } from "../internal/services/agendas/AgendasService.js";
 import { AgendaController } from "../internal/controllers/agendas/AgendasController.js";
 import { buildAgendaRouter } from "../internal/routes/agendas/AgendasRoutes.js";
-
+import { AlertsRepository } from "../internal/repositories/alerts/AlertsRepository.js";
+import { AlertsService } from "../internal/services/alerts/AlertsService.js";
+import { AlertsController } from "../internal/controllers/alerts/AlertsController.js";
+import { buildAlertsRouter } from "../internal/routes/alerts/AlertsRoutes.js";
 const app = express();
 app.use(express.json());
 
@@ -13,12 +16,12 @@ app.use(express.json());
 const agendaRepo = new AgendaRepository(pool);
 const agendaService = new AgendaService(agendaRepo);
 const agendaController = new AgendaController(agendaService);
-
+const alertsRepo = new AlertsRepository(pool);
+const alertsService = new AlertsService(alertsRepo);
+const alertsController = new AlertsController(alertsService);
 // 🔹 Routes
 app.use("/agendas", buildAgendaRouter(agendaController));
-
-// Health check
-app.get("/health", (req, res) => res.json({ ok: true }));
+app.use("/alerts", buildAlertsRouter(alertsController));
 
 const port = 3001;
 app.listen(port, () => {
