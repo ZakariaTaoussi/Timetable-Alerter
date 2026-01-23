@@ -6,7 +6,7 @@ export class EventsRepository {
   async findAll() {
     const sql = `
       SELECT AgendaIDs, UID, Description, Name, Start, End, Location, LastUpdate
-      FROM events
+      FROM timetable.events
       ORDER BY Start ASC
     `;
     const [rows] = await this.pool.query(sql);
@@ -28,7 +28,7 @@ export class EventsRepository {
   async findByUid(uid) {
     const sql = `
       SELECT AgendaIDs, UID, Description, Name, Start, End, Location, LastUpdate
-      FROM events
+      FROM timetable.events
       WHERE UID = ?
       LIMIT 1
     `;

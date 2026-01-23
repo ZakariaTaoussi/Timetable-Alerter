@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-
+import { runEventsConsumer } from "../internal/consumer/EventConsumer.js";
 import pool from "../internal/helpers/database.js";
 import { EventsRepository } from "../internal/repositories/EventRepository.js";
 import { EventsService } from "../internal/services/EventService.js";
@@ -26,3 +26,8 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 
 const port = 3000;
 app.listen(port, () => console.log(`API running on http://localhost:${port}`));
+runEventsConsumer({
+  handleEvent: async (payload) => {
+    console.log("handleEvent:", payload);
+  }
+});
