@@ -1,6 +1,13 @@
 {
+    "type": "module",
+
   "dependencies": {
+    "dotenv": "^17.4.2",
     "mysql2": "^3.16.0",
-    "nats": "^2.29.3"
+    "nats": "^2.29.3",
+    "resend": "^6.12.2",
+      "type": "module"
+
   }
+  
 }

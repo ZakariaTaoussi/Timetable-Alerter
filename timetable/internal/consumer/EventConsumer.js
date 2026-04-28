@@ -1,12 +1,12 @@
 // eventConsumer.js
-import { connect, consumerOpts } from "nats";
+import { connect, consumerOpts , StringCodec  } from "nats";
 import { handleEvent } from "./eventHandler.js";  // Importer handleEvent
 import { createAlertsPublisher } from "../consumer/alerts/alertsPublisher.js";  // Importer le publisher d'alertes
 
 export async function runEventsConsumer() {
   const nc = await connect({ servers: "nats://localhost:4222" });
   const alertsPublisher = createAlertsPublisher(nc); // Création du publisher pour envoyer des alertes
-
+   const sc = StringCodec()
   const js = nc.jetstream();
   const opts = consumerOpts().durable("EVENTS_DURABLE").manualAck().ackExplicit();
   const sub = await js.subscribe("EVENTS", opts);
@@ -18,7 +18,8 @@ export async function runEventsConsumer() {
     console.log("📥 EVENTS_DURABLE reçoit seq =", seq);
 
     try {
-      const payload = m.json();
+      const raw = sc.decode(m.data);  // bytes → string
+      const payload = JSON.parse(raw); 
 
       // Si payload est un tableau, traiter chaque événement
       if (Array.isArray(payload)) {
@@ -37,8 +38,11 @@ export async function runEventsConsumer() {
 
       m.ack(); // Accuser la réception du message
       console.log("✅ ack seq =", seq);
-    } catch (e) {
-      console.error("❌ erreur sur seq =", seq, e.message);
-    }
+   } catch (e) {
+  console.error("❌ erreur sur seq =", seq, e.message);
+  console.error("❌ raw hex:", Buffer.from(m.data).toString('hex').slice(0, 80));
+  console.error("❌ raw string:", sc.decode(m.data).slice(0, 300));
+  m.ack();
+}
   }
 }

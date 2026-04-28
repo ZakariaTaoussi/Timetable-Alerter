@@ -15,6 +15,11 @@ export class AlertsRepository {
     return rows;
   }
 
+  async findByAgendaID(uca_id) {
+    const sql = `SELECT id, uca_id AS ucaId, user_email AS userEmail FROM alerts WHERE uca_id = ?`;
+    const [rows] = await this.pool.execute(sql, [uca_id]);
+    return rows.length ? rows[0] : null;
+  }
   async findById(id) {
     const sql = `SELECT id, uca_id AS ucaId, user_email AS userEmail FROM alerts WHERE id = ? LIMIT 1`;
     const [rows] = await this.pool.execute(sql, [id]);

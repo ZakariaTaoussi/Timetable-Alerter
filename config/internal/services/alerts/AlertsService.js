@@ -25,6 +25,12 @@ export class AlertsService {
     if (!alert) return { ok: false, status: 404, error: "alert not found" };
     return { ok: true, status: 200, data: alert };
   }
+   async getAlertByAgenda(uca_id) {
+    const alert = await this.repo.findByAgendaID(Number(uca_id));
+    if (!alert) return { ok: false, status: 404, error: "alert not found" };
+    return { ok: true, status: 200, data: alert };
+  }
+
 
   async updateAlert(id, body) {
     const ucaId = Number(body.ucaId);

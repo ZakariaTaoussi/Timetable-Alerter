@@ -38,7 +38,14 @@ export class AlertsController {
       return res.status(500).json({ error: "SERVER_ERROR", message: e.message });
     }
   };
-
+getByAgendaID = async (req, res) => {
+    try {
+      const r = await this.service.getAlertByAgenda(req.params.uca_id);
+      return res.status(r.status).json(r.ok ? r.data : { error: r.error });
+    } catch (e) {
+      return res.status(500).json({ error: "SERVER_ERROR", message: e.message });
+    }
+  };
   remove = async (req, res) => {
     try {
       const r = await this.service.deleteAlert(req.params.id);
@@ -48,3 +55,7 @@ export class AlertsController {
     }
   };
 }
+
+
+
+  
